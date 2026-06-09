@@ -1,24 +1,23 @@
-# Deploy to Vercel — 5 steps
+# Deploy to Railway — 5 steps
 
 ## 1. Push to GitHub
 
 ```bash
-git init
 git add .
-git commit -m "Initial commit"
-gh repo create ai-media-service --private --push --source=.
-# or: git remote add origin https://github.com/YOU/ai-media-service.git && git push -u origin main
+git commit -m "Switch deployment to Railway"
+git push
 ```
 
-## 2. Import on Vercel
+## 2. Create a Railway project
 
-Go to https://vercel.com/new → Import your repo → Deploy with defaults.
-
-After the first deploy, note your URL (e.g. `https://ai-media-service.vercel.app`).
+1. Go to https://railway.app/new
+2. Click **Deploy from GitHub repo** → select `ai-video-service`
+3. Railway auto-detects Next.js and runs `npm run build` then `npm run start`
+4. After the first deploy, go to **Settings → Networking → Generate Domain** to get your public URL (e.g. `https://ai-video-service.up.railway.app`)
 
 ## 3. Add Environment Variables
 
-In Vercel → Project → Settings → Environment Variables, add:
+In Railway → your service → **Variables**, add:
 
 | Variable | Where to get it |
 |---|---|
@@ -29,18 +28,18 @@ In Vercel → Project → Settings → Environment Variables, add:
 | `KLING_SECRET_KEY` | https://klingai.com/dev → API Access |
 | `RESEND_API_KEY` | https://resend.com/api-keys |
 | `EMAIL_FROM` | `AI Media Studio <orders@yourdomain.com>` (must be a Resend verified domain) |
-| `NEXT_PUBLIC_BASE_URL` | `https://your-project.vercel.app` (no trailing slash) |
+| `NEXT_PUBLIC_BASE_URL` | `https://your-project.up.railway.app` (no trailing slash) |
 
-Redeploy after adding variables.
+Railway redeploys automatically after saving variables.
 
 ## 4. Add Stripe Webhook
 
 In Stripe Dashboard → Developers → Webhooks → Add endpoint:
 
-- **Endpoint URL**: `https://your-project.vercel.app/api/webhook`
+- **Endpoint URL**: `https://your-project.up.railway.app/api/webhook`
 - **Events**: `checkout.session.completed`
 
-Copy the **Signing secret** → paste as `STRIPE_WEBHOOK_SECRET` in Vercel → Redeploy.
+Copy the **Signing secret** → paste as `STRIPE_WEBHOOK_SECRET` in Railway → redeploy.
 
 ## 5. Verify Resend sender domain
 
